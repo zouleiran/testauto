@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.batchCaseManager.BatchCaseStepMapper">
+  <resultMap id="BaseResultMap" type="cn.boss.platform.bean.batchCaseManager.BatchCaseStepBean">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+    <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+    <result column="batch_id" jdbcType="INTEGER" property="batchId"/>
+    <result column="env_id" jdbcType="INTEGER" property="envId"/>
+    <result column="interface_id" jdbcType="INTEGER" property="interfaceId"/>
+    <result column="case_name" jdbcType="VARCHAR" property="caseName"/>
+    <result column="secretKey" jdbcType="VARCHAR" property="secretKey"/>
+    <result column="t" jdbcType="VARCHAR" property="t"/>
+    <result column="pre_processing" jdbcType="VARCHAR" property="preProcessing"/>
+    <result column="headers" jdbcType="VARCHAR" property="headers"/>
+    <result column="post_processing" jdbcType="VARCHAR" property="postProcessing"/>
+    <result column="public_parameters" jdbcType="VARCHAR" property="publicParameters"/>
+    <result column="parameters" jdbcType="VARCHAR" property="parameters"/>
+    <result column="expected_status" jdbcType="VARCHAR" property="expectedStatus"/>
+    <result column="expected_result" jdbcType="VARCHAR" property="expectedResult"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="author" jdbcType="INTEGER" property="author"/>
+  </resultMap>
+
+
+  <sql id="Base_Column_List">
+    id, project_id, group_id, batch_id, env_id,interface_id, case_name, secretKey, t,pre_processing,headers, post_processing,create_time, expected_result,update_time,public_parameters,
+    parameters, expected_status,author
+  </sql>
+
+
+  <!--添加用例 -->
+  <insert id="addBatchCaseStep" parameterType="cn.boss.platform.bean.batchCaseManager.BatchCaseStepBean"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into boss_batch_case_step_tb(project_id, group_id, batch_id, env_id,interface_id, case_name, secretKey, t,pre_processing,headers, post_processing,public_parameters,parameters,expected_result,expected_status,create_time, update_time,
+    author)
+    values(#{projectId}, #{groupId}, #{batchId}, #{envId},#{interfaceId}, #{caseName}, #{secretKey}, #{t}, #{preProcessing},#{headers}, #{postProcessing},#{publicParameters},#{parameters},#{expectedResult},#{expectedStatus},#{createTime},#{updateTime},#{author})
+  </insert>
+
+  <!--分页查询用例步骤 -->
+  <select id="getBatchStepBycaseId" resultMap="BaseResultMap">
+    select * from boss_batch_case_step_tb where 1=1
+    <if test="batchId != null">
+      AND batch_id = '${batchId}'
+    </if>
+    order by id ASC limit #{skip},#{take}
+  </select>
+
+
+  <!--分页查询用例步骤-集成执行 -->
+  <select id="getBatchStepIntegradeBycaseId" resultMap="BaseResultMap">
+    select * from boss_batch_case_step_tb where 1=1 AND batch_id = '${batchId}'
+    <if test="batchCaseId != null">
+      AND id in
+      <foreach item="item" index="index" collection="batchCaseId"
+               open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      order by id ASC
+    </if>
+  </select>
+
+  <!--分页查询用例步骤-集成执行 -->
+  <!--<select id="getBatchStepIntegradeBycaseId"  resultMap="BaseResultMap">-->
+    <!--select c.id, c.project_id,c.group_id,c.env_id,c.interface_id,c.batch_id,c.case_name,c.secretKey,c.t,c.pre_processing,c.post_processing,c.headers, c.public_parameters,c.parameters, c.expected_result, c.create_time,-->
+    <!--c.update_time, c.author,c.expected_status-->
+    <!--from boss_batch_case_step_tb c join boss_interface_tb i on c.interface_id = i.id-->
+    <!--where 1=1 AND c.batch_id = '${batchId}'-->
+    <!--ORDER BY c.id ASC-->
+  <!--</select>-->
+
+  <!--查询单步骤 -->
+  <select id="getBatchCaseById" resultMap="BaseResultMap">
+    SELECT * FROM boss_batch_case_step_tb WHERE id = #{id}
+  </select>
+
+  <!--删除用例step -->
+  <delete id="deleteBatchCaseStep" parameterType="java.lang.Integer">
+    DELETE FROM boss_batch_case_step_tb WHERE id = #{id}
+  </delete>
+
+  <!--更新批用例步骤 -->
+  <update id="updateBatchCaseStep" parameterType="cn.boss.platform.bean.batchCaseManager.BatchCaseStepBean">
+    UPDATE boss_batch_case_step_tb
+    SET project_id = #{projectId},
+    group_id = #{groupId},
+    batch_id = #{batchId},
+    interface_id = #{interfaceId},
+    env_id = #{envId},
+    case_name = #{caseName},
+    secretKey = #{secretKey},
+    t = #{t},
+    pre_processing = #{preProcessing},
+    headers = #{headers},
+    post_processing = #{postProcessing},
+    public_parameters = #{publicParameters},
+    parameters = #{parameters},
+    expected_status = #{expectedStatus},
+    expected_result = #{expectedResult},
+    update_time = #{updateTime},
+    author = #{author}
+    WHERE id = #{id}
+  </update>
+
+  <update id="switchBatchCase" parameterType="java.lang.Integer">
+    UPDATE boss_batch_case_step_tb
+    SET id = #{afterId} WHERE id = #{frontId}
+  </update>
+
+
+</mapper>

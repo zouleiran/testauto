@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.interfaceManager.MockInterfaceMapper">
+    <resultMap id="BaseResultMap" type="cn.boss.platform.bean.interfaceManager.MockInterfaceBean">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="interface_id" jdbcType="INTEGER" property="interfaceId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="domain" jdbcType="VARCHAR" property="domain"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="method" jdbcType="VARCHAR" property="method"/>
+        <result column="parameters" jdbcType="VARCHAR" property="parameters"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="response_result" jdbcType="VARCHAR" property="responseResult"/>
+        <result column="delay" jdbcType="VARCHAR" property="delay"/>
+        <result column="author" jdbcType="VARCHAR" property="author"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!--添加mock接口 -->
+    <insert id="addMockInterface" parameterType="cn.boss.platform.bean.interfaceManager.MockInterfaceBean">
+        insert into boss_mock_tb (id,interface_id,name,domain,url,method,parameters,status,response_result,delay,author,create_time,update_time)
+        VALUES (#{id},#{interfaceId},#{name},#{domain},#{url},#{method},#{parameters},#{status},#{responseResult},#{delay},#{author},#{createTime},#{updateTime});
+    </insert>
+
+
+    <!--查询mock接口 -->
+    <select id="getMockInterface" resultMap="BaseResultMap">
+        select * from boss_mock_tb where 1=1
+        <if test="interfaceId !=null">
+            AND interface_id = '${interfaceId}'
+        </if>
+        <if test="id !=null">
+            AND id = '${id}'
+        </if>
+    </select>
+
+    <!--查询mock接口 -->
+    <select id="getMockInterfaceByUrl" resultMap="BaseResultMap">
+        select * from boss_mock_tb where 1=1
+        <if test="url !=null">
+            AND url = '${url}'
+        </if>
+    </select>
+
+
+    <!-- 删除mock接口 -->
+    <delete id="deleteMockInterface" parameterType="java.lang.Integer">
+        delete from boss_mock_tb where id=#{id}
+    </delete>
+
+    <!-- 更新mock接口 -->
+    <update id="updateMockInterface" parameterType="cn.boss.platform.bean.interfaceManager.MockInterfaceBean">
+        update boss_mock_tb
+        set
+        interface_id = #{interfaceId},
+        name = #{name},
+        domain = #{domain},
+        url = #{url},
+        method = #{method},
+        parameters = #{parameters},
+        status = #{status},
+        response_result = #{responseResult},
+        delay = #{delay},
+        author = #{author},
+        update_time = #{updateTime}
+        where id = #{id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,6 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Sun Nov 10 20:50:58 CST 2019
+jsr305-3.0.2.jar>central=
+jsr305-3.0.2.pom>nexus=
+jsr305-3.0.2.pom>central=
+jsr305-3.0.2.jar>nexus=

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	<!-- springmvc 注解驱动 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- 扫描器 -->
+	<context:component-scan base-package="cn.boss.platform.web"></context:component-scan>
+	<!-- 静态资源访问 -->
+	<mvc:resources location="/static/" mapping="/static/**" />
+	<context:component-scan base-package="cn.boss.platform.service.interfaceManager" />
+	<!-- 支持跨域访问 -->
+	<mvc:cors><mvc:mapping path="/**"/></mvc:cors>
+
+<!--	<mvc:default-servlet-handler/>-->
+<!--	<bean id="taskJob" class="cn.boss.platform.web.api.TimerTest"/>-->
+<!--	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+<!--		<property name="group" value="job_work"/>-->
+<!--		<property name="name" value="job_work_name"/>-->
+<!--		&lt;!&ndash;false表示等上一个任务执行完后再开启新的任务&ndash;&gt;-->
+<!--		<property name="concurrent" value="false"/>-->
+<!--		<property name="targetObject">-->
+<!--			<ref bean="taskJob"/>-->
+<!--		</property>-->
+<!--		<property name="targetMethod">-->
+<!--			<value>run</value>-->
+<!--		</property>-->
+<!--	</bean>-->
+
+	<!-- 初始化springUtils -->
+<!--	<bean id="springUtils" class="cn.boss.platform.service.interfaceManager.SpringUtils" />-->
+<!--	&lt;!&ndash; 初始化Scheduler &ndash;&gt;-->
+<!--	<bean id="schedulerFactoryBean"  class="org.springframework.scheduling.quartz.SchedulerFactoryBean" />-->
+<!--	&lt;!&ndash; 初始化job &ndash;&gt;-->
+<!--	<bean id="initQuartzJob" class="cn.boss.platform.service.interfaceManager.InitQuartzJob"  init-method="init"  lazy-init="false" />-->
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--<property name="defaultEncoding" value="utf-8"></property>-->
+		<property name="maxUploadSize" value="1048576000"></property>
+		<property name="maxInMemorySize" value="819200"></property>
+	</bean>
+	<bean id="myJob2" class="cn.boss.platform.service.interfaceManager.MyJob"></bean>
+
+	<!-- 定时任务 -->
+	<!-- 定义调用对象和调用对象的方法，这个配置和普通的一样的,id是JobDetail的名字  -->
+	<bean id="jobtask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类  -->
+		<property name="targetObject" ref="myJob2" />
+		<!-- 调用类中的方法  -->
+		<property name="targetMethod" value="doSomething" />
+		<!-- 是否并发  -->
+		<property name ="concurrent" value ="false"  />
+	</bean>
+
+	<!-- 定义触发时间 ，这边就不同了，这里必须将时间设置成无限长，因为我们要去读取数据库的时间来做为定时器的触发时间-->
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean ">
+		<property name="jobDetail" ref="jobtask" />
+		<!-- cron表达式  -->
+		<property name="cronExpression" value="0/60 * * * * ?" />
+	</bean>
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+	<bean id="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobFactory" ref="autowiringBeanJobFactory" />
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+			</list>
+		</property>
+	</bean>
+
+	<!--这个类是用来设置触发时间的， startJobs方法启动调度容器，然后按照上面触发器每隔1s执行所配置的myJob2.doSomething()方法 -->
+	<bean id="quartzManager" class="cn.boss.platform.service.interfaceManager.QuartzManager" lazy-init="false" init-method="startJobs" >
+		<!--这个对象一定要注入，这样类才能进行管理，还有在类型要用get set方法，不然会报错。-->
+		<property name="scheduler" ref="startQuertz" />
+	</bean>
+
+	<bean
+			class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</util:list>
+		</property>
+	</bean>
+	<bean id="mappingJacksonHttpMessageConverter"
+		  class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 注解功能的默认配置,处理器和映射器 -->
+	<bean id="handlerMapping"
+		  class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<bean id="handlerAdapter"
+		  class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<!-- 配置试图解析器 如何把handler 方法返回值解析为实际物理试图 -->
+	<bean
+			class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 前缀 -->
+		<property name="prefix" value="WEB-INF/" />
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>

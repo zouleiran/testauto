@@ -1,0 +1,5 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Sun Nov 10 20:51:36 CST 2019
+org.jacoco.core-0.7.9.pom>central=
+org.jacoco.core-0.7.9.jar>nexus=
+org.jacoco.core-0.7.9.pom>nexus=

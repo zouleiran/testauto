@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.toolsManager.PhoneManagerMapper">
+    <resultMap id="BaseResultMap" type="cn.boss.platform.bean.toolsManager.PhoneManagerBean">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="number" jdbcType="VARCHAR" property="number"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="os" jdbcType="VARCHAR" property="os"/>
+        <result column="crack" jdbcType="VARCHAR" property="crack"/>
+        <result column="resolution" jdbcType="VARCHAR" property="resolution"/>
+        <result column="size" jdbcType="VARCHAR" property="size"/>
+        <result column="network_model" jdbcType="VARCHAR" property="networkModel"/>
+        <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
+        <result column="imei" jdbcType="VARCHAR" property="imei"/>
+        <result column="user" jdbcType="VARCHAR" property="user"/>
+        <result column="department" jdbcType="VARCHAR" property="department"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+
+    </resultMap>
+
+    <!--关键字手机 -->
+    <select id="searchPhoneInfo" resultMap="BaseResultMap">
+        <if test="keyword != null">
+            <bind name="pattern" value="'%' + keyword + '%'"></bind>
+        </if>
+        select * from boss_tools_phone_manager_tb where 1=1
+        <if test="keyword != null">
+            AND (phone like #{pattern} or type like #{pattern} or receiver like #{pattern} or resolution like #{pattern} or user like #{pattern} or receiver like #{pattern})
+        </if>
+        order by id DESC
+    </select>
+
+
+    <select id="getPhoneById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from boss_tools_phone_manager_tb where 1=1 AND id = #{id}
+    </select>
+
+    <delete id="deletePhoneInfo" parameterType="java.lang.Integer">
+        delete from boss_tools_phone_manager_tb where id=#{id}
+    </delete>
+
+    <!--添加接口 -->
+    <insert id="addPhoneInfo" parameterType="cn.boss.platform.bean.toolsManager.PhoneManagerBean">
+        insert into boss_tools_phone_manager_tb (number,phone,type,os,crack,resolution,size,network_model,receiver,imei,user,department,remarks,update_time)
+        VALUES (#{number},#{phone},#{type},#{os},#{crack},#{resolution},#{size},#{networkModel},#{receiver},#{imei},#{user},#{department},#{remarks},#{updateTime});
+    </insert>
+
+    <!-- 更新单条接口 -->
+    <update id="updatePhoneInfo" parameterType="cn.boss.platform.bean.toolsManager.PhoneManagerBean">
+        update boss_tools_phone_manager_tb
+        set
+        number = #{number},
+        phone = #{phone},
+        type = #{type},
+        os = #{os},
+        crack = #{crack},
+        resolution = #{resolution},
+        size = #{size},
+        network_model = #{networkModel},
+        imei = #{imei},
+        user = #{user},
+        department = #{department},
+        remarks = #{remarks},
+        update_time = #{updateTime}
+        where id = #{id}
+    </update>
+
+
+
+
+</mapper>

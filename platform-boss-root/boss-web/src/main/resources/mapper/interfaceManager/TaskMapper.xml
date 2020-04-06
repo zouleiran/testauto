@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.interfaceManager.TaskMapper">
+  <resultMap id="BaseResultMap" type="cn.boss.platform.bean.interfaceManager.TaskBean">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+    <result column="interface_id" jdbcType="VARCHAR" property="interfaceId"/>
+    <result column="env_id" jdbcType="INTEGER" property="envId"/>
+    <result column="case_id" jdbcType="VARCHAR" property="caseId"/>
+    <result column="group_id" jdbcType="VARCHAR" property="groupId"/>
+    <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="version" jdbcType="VARCHAR" property="version"/>
+    <result column="author" jdbcType="VARCHAR" property="author"/>
+    <result column="message" jdbcType="VARCHAR" property="message"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="case_count" jdbcType="INTEGER" property="caseCount"/>
+    <result column="cron" jdbcType="VARCHAR" property="cron"/>
+    <result column="jobstatus" jdbcType="VARCHAR" property="jobstatus"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, project_id, group_id, interface_id, case_id,env_id,task_name,version,type,create_time,update_time,case_count,message,author
+  </sql>
+
+  <!--添加任务 -->
+  <insert id="insertTask" parameterType="cn.boss.platform.bean.interfaceManager.TaskBean">
+    INSERT INTO boss_task_tb(project_id, group_id, interface_id, env_id,case_id,task_name,version,type,message,author,case_count,create_time,update_time,cron,jobstatus) VALUES (
+    #{projectId},#{groupId},#{interfaceId},#{envId},#{caseId},#{taskName},#{version},#{type},#{message},#{author},#{caseCount},#{createTime},#{updateTime},#{cron},#{jobstatus}
+    )
+  </insert>
+
+  <!--更新任务 -->
+  <update id="updateTask" parameterType="cn.boss.platform.bean.interfaceManager.TaskBean">
+    UPDATE boss_task_tb
+    SET project_id = #{projectId},
+    group_id = #{groupId},
+    interface_id = #{interfaceId},
+    env_id = #{envId},
+    case_id = #{caseId},
+    task_name = #{taskName},
+    type = #{type},
+    version = #{version},
+    message = #{message},
+    author = #{author},
+    case_count = #{caseCount},
+    update_time = #{updateTime},
+        cron = #{cron},
+    jobstatus = #{jobstatus}
+    WHERE id = #{id}
+  </update>
+
+  <!--删除任务 -->
+  <delete id="deleteTask" parameterType="java.lang.Integer">
+    DELETE FROM boss_task_tb WHERE id = #{taskId}
+  </delete>
+
+  <!--查询满足条件，返回list -->
+  <select id="searchTask" resultMap="BaseResultMap">
+    select * from boss_task_tb where 1=1
+    <if test="projectId != null">
+      AND project_id = '${projectId}'
+    </if>
+    <if test="taskId != null">
+      AND id like '%${taskId}%'
+    </if>
+    <if test="taskName != null ">
+      AND task_name like '%${taskName}%'
+    </if>
+    <if test="type != null ">
+      AND type like '%${type}%'
+    </if>
+    order by id desc limit #{startSize},#{pageSize}
+  </select>
+  <select id="searchjobstatusById" resultType="java.lang.String">
+    select jobstatus from boss_task_tb where id= '${id}'
+  </select>
+  <!--查询满足条件，返回list -->
+  <select id="searchTaskById" resultMap="BaseResultMap">
+    select * from boss_task_tb where 1=1 and id= '${taskId}'
+  </select>
+  <select id="getLastId" resultType="java.lang.Integer">
+    select id from boss_task_tb order by update_time desc limit 1
+  </select>
+  <select id="searchCountTask"  resultType="java.lang.Integer">
+    SELECT count(1)
+    FROM boss_task_tb where 1=1
+    <if test="projectId != null">
+      AND project_id = '${projectId}'
+    </if>
+    <if test="taskId != null">
+      AND id like '%${taskId}%'
+    </if>
+    <if test="taskName != null ">
+      AND task_name like '%${taskName}%'
+    </if>
+  </select>
+  <select id="selectTimerTask" resultMap="BaseResultMap">
+    select * from boss_task_tb
+  </select>
+
+</mapper>

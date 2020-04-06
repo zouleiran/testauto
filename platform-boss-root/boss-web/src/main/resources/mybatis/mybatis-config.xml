@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+        <typeAlias alias="ProjectBean" type="cn.boss.platform.bean.interfaceManager.ProjectBean"/>
+        <typeAlias alias="ProjectGroupBean" type="cn.boss.platform.bean.interfaceManager.ProjectGroupBean"/>
+        <typeAlias alias="InterfaceBean" type="cn.boss.platform.bean.interfaceManager.InterfaceBean"/>
+        <typeAlias alias="CaseBean" type="cn.boss.platform.bean.interfaceManager.CaseBean"/>
+    </typeAliases>
+
+	<!-- spring整合之后，environments配置将废除  -->
+    <environments default="development">
+        <environment id="development">
+        <!-- 使用jdbc事务管理，事务控制有mybatis -->
+        <transactionManager type="JDBC"/>
+        	<!-- 数据库连接池 ，有mybatis管理-->
+            <dataSource type="POOLED">
+            <property name="driver" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://10.12.54.152:31001/platform_db"/>
+            <property name="username" value="dev_test"/>
+            <property name="password" value="ZSMvrdC3"/>
+            </dataSource>
+        </environment>
+    </environments>
+    
+    <!-- 加载映射文件,可以加载多个 -->
+    <mappers>
+        <mapper resource="mapper/interfaceManager/ProjectMapper.xml"/>
+        <mapper resource="mapper/toolsManager/ChangestatusMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/ProjectGroupMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/InterfaceMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/EnvMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/PeopleruleMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/RuleMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/CaseMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/ParameterMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/CaseExecuteLogMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/TaskMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/ReportMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/MockInterfaceMapper.xml"/>
+        <mapper resource="mapper/batchCaseManager/BatchCaseMapper.xml"/>
+        <mapper resource="mapper/batchCaseManager/BatchCaseStepMapper.xml"/>
+        <mapper resource="mapper/dubboManager/ZhipinEnvMapper.xml"/>
+        <mapper resource="mapper/dubboManager/ZhipinDubboInterfaceMapper.xml"/>
+        <mapper resource="mapper/dubboManager/ZhipinDubboCaseMapper.xml"/>
+        <mapper resource="mapper/dubboManager/ZhipinDubboCaseExecuteLogMapper.xml"/>
+        <mapper resource="mapper/toolsManager/ZhipinHealthUrlMapper.xml"/>
+        <mapper resource="mapper/toolsManager/UserInfoMapper.xml"/>
+        <mapper resource="mapper/toolsManager/ShellMapper.xml"/>
+        <mapper resource="mapper/interfaceManager/JenkinsMapper.xml"/>
+        <mapper resource="mapper/toolsManager/PhoneManagerMapper.xml"/>
+        <mapper resource="mapper/autoCaseManager/AutoCaseMapper.xml"/>
+        <mapper resource="mapper/autoCaseManager/AutoCaseStepMapper.xml"/>
+        <mapper resource="mapper/autoCaseManager/AutoCaseExecuteLogMapper.xml"/>
+        <mapper resource="mapper/toolsManager/AppInterfaceLogMapper.xml"/>
+    </mappers>
+</configuration>

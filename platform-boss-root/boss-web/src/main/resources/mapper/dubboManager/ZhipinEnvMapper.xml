@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.dubboManager.ZhipinEnvMapper">
+  <resultMap id="BaseResultMap" type="cn.boss.platform.bean.dubboManager.ZhipinEnvBean">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="zhipin_name" jdbcType="VARCHAR" property="zhipinName"/>
+    <result column="env" jdbcType="VARCHAR" property="env"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+    <result column="health_url" jdbcType="VARCHAR" property="healthUrl"/>
+    <result column="health_address" jdbcType="VARCHAR" property="healthAddress"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, zhipinName, env, address
+  </sql>
+
+
+  <!--查询zhipinenv -->
+  <select id="getZhipinEnv" resultMap="BaseResultMap">
+    select * from boss_zhipin_env_tb where 1=1
+    <if test="zhipinName != null ">
+      AND zhipin_name = '${zhipinName}'
+    </if>
+    <if test="env != null">
+      AND env = '${env}'
+    </if>
+    order by id desc
+  </select>
+
+
+  <!--通过envid查询用例 -->
+  <select id="getZhipinEnvById" resultMap="BaseResultMap">
+    SELECT * FROM boss_zhipin_env_tb where id = #{id}
+  </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.dubboManager.ZhipinDubboCaseExecuteLogMapper">
+    <resultMap id="BaseResultMap" type="cn.boss.platform.bean.dubboManager.ZhipinDubboCaseExecuteLogBean">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="interface_id" jdbcType="INTEGER" property="interfaceId"/>
+        <result column="env_id" jdbcType="INTEGER" property="envId"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="serial_id" jdbcType="INTEGER" property="serialId"/>
+        <result column="case_id" jdbcType="INTEGER" property="caseId"/>
+        <result column="response_result" jdbcType="VARCHAR" property="responseResult"/>
+        <result column="parameters" jdbcType="VARCHAR" property="parameters"/>
+
+        <result column="expected_result" jdbcType="VARCHAR" property="expectedResult"/>
+        <result column="result" jdbcType="INTEGER" property="result"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="author" jdbcType="VARCHAR" property="author"/>
+        <result column="exec_time" jdbcType="INTEGER" property="execTime"/>
+    </resultMap>
+
+    <!--添加用例执行日志-->
+    <insert id="addExecuteLog" parameterType="cn.boss.platform.bean.dubboManager.ZhipinDubboCaseExecuteLogBean">
+    insert into boss_zhipin_dubbo_execute_log_tb(interface_id, env_id,task_id,serial_id,case_id,response_result,parameters,expected_result,result,exec_time,create_time,author)
+    values(#{interfaceId}, #{envId}, #{taskId},#{serialId},#{caseId},#{responseResult},#{parameters},#{expectedResult},#{result},#{execTime},#{createTime},#{author})
+  </insert>
+
+    <!--查询执行用例 -->
+    <select id="getExecuteLog" resultMap="BaseResultMap">
+        select * from boss_zhipin_dubbo_execute_log_tb where 1=1
+        <if test="interfaceId != null">
+            AND interface_id = '${interfaceId}'
+        </if>
+        <if test="caseId != null ">
+            AND case_id = '${caseId}'
+        </if>
+        <if test="taskId != null ">
+            AND task_id = '${taskId}'
+        </if>
+        <if test="serialId != null ">
+            AND serial_id = '${serialId}'
+        </if>
+        ORDER BY id DESC  limit #{skip},#{pageSize}
+    </select>
+
+    <!--查询执行个数 -->
+    <select id="countCaseExecuteLog" resultType="java.lang.Integer">
+        select count(*) from boss_zhipin_dubbo_execute_log_tb where 1=1
+        <if test="interfaceId != null">
+            AND interface_id = '${interfaceId}'
+        </if>
+        <if test="caseId != null ">
+            AND case_id = '${caseId}'
+        </if>
+        <if test="taskId != null ">
+            AND task_id = '${taskId}'
+        </if>
+        <if test="serialId != null ">
+            AND serial_id = '${serialId}'
+        </if>
+    </select>
+
+
+</mapper>

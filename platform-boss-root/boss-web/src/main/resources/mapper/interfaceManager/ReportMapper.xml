@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.interfaceManager.ReportMapper">
+  <resultMap id="BaseResultMap" type="cn.boss.platform.bean.interfaceManager.ReportBean">
+	  <id column="interface_id" jdbcType="INTEGER" property="interfaceId"/>
+    <result column="interface_name" jdbcType="VARCHAR" property="interfaceName"/>
+    <collection property="executeLogs" ofType="cn.boss.platform.bean.interfaceManager.CaseLogResultBean">
+        <result column="case_name" jdbcType="VARCHAR" property="caseName"/>
+	      <association property="bean" javaType="cn.boss.platform.bean.interfaceManager.CaseExecuteLogBean">
+	             <id column="id" jdbcType="INTEGER" property="id"/>
+					  <result column="project_id" jdbcType="INTEGER" property="projectId"/>
+					  <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+					  <result column="interface_id" jdbcType="INTEGER" property="interfaceId"/>
+					  <result column="env_id" jdbcType="INTEGER" property="envId"/>
+					  <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+					  <result column="serial_id" jdbcType="INTEGER" property="serialId"/>
+					  <result column="case_id" jdbcType="INTEGER" property="caseId"/>
+					  <result column="url" jdbcType="VARCHAR" property="url"/>
+					  <result column="response_result" jdbcType="VARCHAR" property="responseResult"/>
+					  <result column="response_status" jdbcType="INTEGER" property="responseStatus"/>
+					  <result column="parameters" jdbcType="VARCHAR" property="parameters"/>
+
+					  <result column="expected_status" jdbcType="INTEGER" property="expectedStatus"/>
+					  <result column="expected_result" jdbcType="VARCHAR" property="expectedResult"/>
+					  <result column="result" jdbcType="INTEGER" property="result"/>
+					  <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+					  <result column="author" jdbcType="VARCHAR" property="author"/>
+					  <result column="exec_time" jdbcType="INTEGER" property="execTime"/>
+	       </association>
+    </collection> 
+  </resultMap>
+  
+  <select id="selectReportBySerialId"  resultMap="BaseResultMap">
+	  select i.id as interface_id,i.name as interface_name, c.case_name , l.*
+	  from boss_case_execute_log_tb l
+	  join boss_case_tb c  on l.case_id = c.id
+	  join boss_interface_tb i on i.id = c.interface_id
+	  where l.serial_id = #{serialId}
+  </select>
+
+
+</mapper>

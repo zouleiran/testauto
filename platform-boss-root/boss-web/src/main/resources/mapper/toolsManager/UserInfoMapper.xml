@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.boss.platform.dao.toolsManager.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.boss.platform.bean.toolsManager.UserInfoBean">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="password" jdbcType="VARCHAR" property="password"/>
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="env" jdbcType="VARCHAR" property="env"/>
+    <result column="domain" jdbcType="VARCHAR" property="domain"/>
+    <result column="awt" jdbcType="VARCHAR" property="awt"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+  </resultMap>
+
+  <!--添加用户信息-->
+  <insert id="addUerInfo" parameterType="cn.boss.platform.bean.toolsManager.UserInfoBean">
+    insert into boss_tools_user_info_tb(phone, password, env,domain,awt,type,update_time,create_time)
+    values(#{phone}, #{password}, #{env},#{domain}, #{awt},#{type},#{updateTime},#{createTime})
+  </insert>
+
+  <!--分页查询日志 -->
+  <select id="getUserInfo" resultMap="BaseResultMap">
+    select * from boss_tools_user_info_tb where 1=1
+    <if test="phone != ''">
+      AND phone = '${phone}'
+    </if>
+    <if test="env != ''">
+      AND env = '${env}'
+    </if>
+    order by id desc
+  </select>
+
+  <!--分页查询日志 -->
+  <select id="getUserInfoBytype" resultMap="BaseResultMap">
+    select * from boss_tools_user_info_tb where 1=1
+    <if test="phone != ''">
+      AND phone = '${phone}'
+    </if>
+    <if test="env != ''">
+      AND env = '${env}'
+    </if>
+    <if test="type != ''">
+      AND type = '${type}'
+    </if>
+    order by id desc
+  </select>
+
+
+  <select id="getUserInfos" resultMap="BaseResultMap">
+    select * from boss_tools_user_info_tb where 1=1
+    order by id desc
+  </select>
+
+
+
+  <!-- 更新环境 -->
+  <update id="updateUserInfo" parameterType="cn.boss.platform.bean.toolsManager.UserInfoBean">
+    update boss_tools_user_info_tb
+    set
+    phone = #{phone},
+    password = #{password},
+    env = #{env},
+    awt = #{awt},
+    update_time = #{updateTime}
+    where id = #{id}
+  </update>
+
+</mapper>
